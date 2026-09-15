@@ -1,0 +1,18 @@
+{
+  "manifest_version": 3,
+  "name": "KeyCaster Overlay",
+  "version": "1.0",
+  "description": "Exibe as teclas pressionadas na tela para gravações e testes de acessibilidade.",
+  "permissions": ["storage"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Configurações do KeyCaster"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_end"
+    }
+  ]
+}

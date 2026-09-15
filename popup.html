@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body {
+      width: 230px;
+      padding: 14px;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 13px;
+      color: #333;
+      margin: 0;
+    }
+    h3 {
+      margin: 0 0 12px 0;
+      font-size: 15px;
+      color: #111;
+    }
+    .field {
+      margin-bottom: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .checkbox-field {
+      flex-direction: row;
+      align-items: center;
+      gap: 8px;
+    }
+    select, input[type="checkbox"] {
+      cursor: pointer;
+    }
+    select {
+      padding: 6px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      background: #fff;
+    }
+  </style>
+</head>
+<body>
+  <h3>KeyCaster Overlay</h3>
+
+  <div class="field checkbox-field">
+    <input type="checkbox" id="enabled">
+    <label for="enabled"><strong>Ativar visualização</strong></label>
+  </div>
+
+  <div class="field">
+    <label for="position">Posição na tela:</label>
+    <select id="position">
+      <option value="bottom-right">Inferior Direito</option>
+      <option value="bottom-left">Inferior Esquerdo</option>
+      <option value="top-right">Superior Direito</option>
+      <option value="top-left">Superior Esquerdo</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label for="size">Tamanho:</label>
+    <select id="size">
+      <option value="small">Pequeno (16px)</option>
+      <option value="medium">Médio (22px)</option>
+      <option value="large">Grande (30px)</option>
+    </select>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
