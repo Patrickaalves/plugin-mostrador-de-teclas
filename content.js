@@ -9,17 +9,68 @@
     size: 'medium'
   };
 
+  const KEY_LABELS = {
+    ' ': 'Espaço',
+    'ArrowUp': '↑',
+    'ArrowDown': '↓',
+    'ArrowLeft': '←',
+    'ArrowRight': '→',
+    'Escape': 'Esc'
+  };
+
+  const CODE_LABELS = {
+    Space: 'Espaço',
+    Escape: 'Esc',
+    ArrowUp: '↑',
+    ArrowDown: '↓',
+    ArrowLeft: '←',
+    ArrowRight: '→',
+    Enter: 'Enter',
+    NumpadEnter: 'Enter',
+    Tab: 'Tab',
+    Backspace: 'Backspace',
+    Delete: 'Delete',
+    Minus: '-',
+    Equal: '=',
+    BracketLeft: '[',
+    BracketRight: ']',
+    Backslash: '\\',
+    Semicolon: ';',
+    Quote: '\'',
+    Backquote: '`',
+    Comma: ',',
+    Period: '.',
+    Slash: '/'
+  };
+
+  // Com Ctrl/Alt em alguns layouts o navegador não resolve o caractere
+  // e envia event.key === 'Unidentified'; nesse caso usamos event.code.
+  function resolveKeyLabel(event) {
+    if (event.key && event.key !== 'Unidentified') {
+      return KEY_LABELS[event.key] || event.key;
+    }
+
+    const code = event.code || '';
+
+    if (CODE_LABELS[code]) return CODE_LABELS[code];
+
+    const letter = /^Key([A-Z])$/.exec(code);
+    if (letter) return letter[1];
+
+    const digit = /^Digit(\d)$/.exec(code);
+    if (digit) return digit[1];
+
+    const numpadDigit = /^Numpad(\d)$/.exec(code);
+    if (numpadDigit) return `Num ${numpadDigit[1]}`;
+
+    const functionKey = /^F\d{1,2}$/.exec(code);
+    if (functionKey) return functionKey[0];
+
+    return code || 'Tecla desconhecida';
+  }
+
   // Traduz a tecla e os modificadores em um rótulo legível.
   function buildComboLabel(event) {
-    const keyMap = {
-      ' ': 'Espaço',
-      'ArrowUp': '↑',
-      'ArrowDown': '↓',
-      'ArrowLeft': '←',
-      'ArrowRight': '→',
-      'Escape': 'Esc'
-    };
-
     const modifierKeys = ['Control', 'Alt', 'Shift', 'Meta'];
     const combo = [];
 
@@ -31,7 +82,7 @@
     if (modifierKeys.includes(event.key)) {
       combo.push(event.key === 'Control' ? 'Ctrl' : event.key);
     } else {
-      combo.push(keyMap[event.key] || event.key);
+      combo.push(resolveKeyLabel(event));
     }
 
     return combo.join(' + ');
