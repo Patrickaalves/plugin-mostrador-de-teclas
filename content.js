@@ -2,7 +2,7 @@
   const OVERLAY_ID = 'visualizador-teclas-pressionadas';
   const MESSAGE_TYPE = 'VISUALIZADOR_TECLA_PRESSIONADA';
   const LAST_KEY_REQUEST = 'VISUALIZADOR_ULTIMA_TECLA';
-  const LAST_KEY_MAX_AGE_MS = 1500;
+  const LAST_KEY_MAX_AGE_MS = 6000;
   const isTopFrame = window === window.top;
 
   let settings = {
@@ -178,6 +178,16 @@
     }
   }
 
+  // Com run_at document_start o body ainda pode não existir.
+  function whenBodyReady(callback) {
+    if (document.body) {
+      callback();
+      return;
+    }
+
+    document.addEventListener('DOMContentLoaded', callback, { once: true });
+  }
+
   // Aplicações SPA podem substituir o conteúdo do body e remover o visualizador.
   function ensureAttached() {
     if (!document.body) return;
@@ -203,12 +213,7 @@
     }
   });
 
-  ensureAttached();
-
-  // Com run_at document_start o body ainda pode não existir.
-  if (!document.body) {
-    document.addEventListener('DOMContentLoaded', ensureAttached, { once: true });
-  }
+  whenBodyReady(ensureAttached);
 
   let hideTimer;
   let fadeTimer;
@@ -227,6 +232,12 @@
   // Auto-repetição por tecla mantida pressionada não incrementa o contador.
   function showLabel(label, isAutoRepeat = false) {
     if (!settings.enabled || !label) return;
+
+    // Sem body não há onde renderizar: aguarda o documento e reexibe.
+    if (!document.body) {
+      whenBodyReady(() => showLabel(label, isAutoRepeat));
+      return;
+    }
 
     ensureAttached();
 

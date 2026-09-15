@@ -9,7 +9,16 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message?.type === LAST_KEY_REQUEST) {
     chrome.storage.session
       .get({ [LAST_KEY_STORAGE]: null })
-      .then((stored) => sendResponse(stored[LAST_KEY_STORAGE]))
+      .then(async (stored) => {
+        const lastKey = stored[LAST_KEY_STORAGE];
+
+        // Consumo único: evita repetir a mesma tecla em cada página carregada.
+        if (lastKey) {
+          await chrome.storage.session.remove(LAST_KEY_STORAGE);
+        }
+
+        sendResponse(lastKey);
+      })
       .catch(() => sendResponse(null));
 
     return true;
