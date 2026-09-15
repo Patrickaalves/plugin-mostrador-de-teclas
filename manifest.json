@@ -1,12 +1,12 @@
 {
   "manifest_version": 3,
-  "name": "KeyCaster Overlay",
+  "name": "Visualizador de Teclas Pressionadas",
   "version": "1.0",
   "description": "Exibe as teclas pressionadas na tela para gravações e testes de acessibilidade.",
   "permissions": ["storage"],
   "action": {
     "default_popup": "popup.html",
-    "default_title": "Configurações do KeyCaster"
+    "default_title": "Configurações do Visualizador de Teclas Pressionadas"
   },
   "content_scripts": [
     {

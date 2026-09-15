@@ -6,7 +6,7 @@
   };
 
   const box = document.createElement('div');
-  box.id = 'key-caster-overlay';
+  box.id = 'visualizador-teclas-pressionadas';
   box.style.position = 'fixed';
   box.style.background = 'rgba(0, 0, 0, 0.88)';
   box.style.color = '#00ffcc';

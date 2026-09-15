@@ -1,6 +1,6 @@
-# KeyCaster Overlay
+# Visualizador de Teclas Pressionadas
 
-Extensão leve para Google Chrome (Manifest V3) desenvolvida para screencasts, gravações com OBS Studio e demonstrações de testes de acessibilidade web (a11y). Exibe as teclas pressionadas e combinações de atalhos em tempo real diretamente na página.
+Extensão leve para Google Chrome (Manifest V3) desenvolvida para screencasts, gravações com OBS Studio e demonstrações de testes de acessibilidade web (a11y). Exibe teclas pressionadas e combinações de atalhos em tempo real em um visualizador flutuante na página.
 
 ---
 
@@ -10,20 +10,20 @@ Extensão leve para Google Chrome (Manifest V3) desenvolvida para screencasts, g
 * **Suporte a Atalhos:** Combinações com `Ctrl`, `Alt`, `Shift` e `Super/Cmd`.
 * **Posicionamento Customizável:** Quatro cantos da tela (Inferior Direito, Inferior Esquerdo, Superior Direito, Superior Esquerdo).
 * **Tamanhos Ajustáveis:** Pequeno (`16px`), Médio (`22px`) e Grande (`30px`).
-* **Interruptor Liga/Desliga:** Ative ou desative o overlay diretamente pelo popup da extensão sem desinstalar.
+* **Interruptor Liga/Desliga:** Ative ou desative o visualizador diretamente pelo popup da extensão sem desinstalar.
 * **Sincronização em Tempo Real:** Alterações feitas no menu de opções refletem instantaneamente nas abas abertas sem necessidade de recarregar (`F5`).
-* **Não Bloqueia Cliques:** Utiliza `pointer-events: none` para que o elemento visual não interfira na interação com a página.
+* **Não Bloqueia Cliques:** Utiliza `pointer-events: none` para que o visualizador não interfira na interação com a página.
 
 ---
 
 ## Estrutura do Projeto
 
 ```text
-keycaster-extension/
+plugin-mostrador-de-teclas/
 ├── manifest.json   # Configuração e permissões da extensão (Manifest V3)
 ├── popup.html      # Interface gráfica do painel de controle
 ├── popup.js        # Script de manipulação do painel e persistência de dados
-├── content.js      # Injeção do overlay na página e escuta de eventos do teclado
+├── content.js      # Injeção do visualizador na página e escuta de eventos do teclado
 └── README.md       # Documentação do projeto
 ```
 
@@ -33,7 +33,7 @@ keycaster-extension/
 
 1. Clone ou baixe este repositório para uma pasta local:
    ```bash
-   git clone [https://github.com/seu-usuario/xxx-extension.git](https://github.com/seu-usuario/xxx-extension.git)
+   git clone https://github.com/Patrickaalves/plugin-mostrador-de-teclas.git
    ```
 2. Abra o Google Chrome e navegue até:
    ```text
@@ -41,7 +41,7 @@ keycaster-extension/
    ```
 3. No canto superior direito, ative a chave **Modo do desenvolvedor**.
 4. Clique no botão **Carregar sem compactação** (ou *Load unpacked*).
-5. Selecione a pasta `visualizador-de-teclas-extension` onde estão os arquivos do projeto.
+5. Selecione a pasta `plugin-mostrador-de-teclas` onde estão os arquivos do projeto.
 6. Fixe o ícone da extensão na barra de ferramentas clicando no ícone de "quebra-cabeça" do Chrome.
 
 ---
@@ -49,11 +49,11 @@ keycaster-extension/
 ## Como Usar
 
 1. Acesse qualquer página web (ex: `https://example.com`).
-2. Clique no ícone do **KeyCaster** na barra do navegador para abrir as configurações:
-   * **Ativar visualização:** Marque ou desmarque para ligar/desligar o overlay.
+2. Clique no ícone do **Visualizador de Teclas Pressionadas** na barra do navegador para abrir as configurações:
+   * **Ativar visualizador:** Marque ou desmarque para ligar/desligar o visualizador flutuante.
    * **Posição na tela:** Escolha o canto de sua preferência.
    * **Tamanho:** Escolha entre Pequeno, Médio ou Grande.
-3. Clique em qualquer área da página e pressione `Tab`, `Enter` ou atalhos como `Ctrl + Alt + K`. O balão com as teclas aparecerá automaticamente.
+3. Clique em qualquer área da página e pressione `Tab`, `Enter` ou atalhos como `Ctrl + Alt + K`. O visualizador exibirá as teclas automaticamente.
 
 ---
 
