@@ -1,6 +1,8 @@
 (() => {
   const OVERLAY_ID = 'visualizador-teclas-pressionadas';
   const MESSAGE_TYPE = 'VISUALIZADOR_TECLA_PRESSIONADA';
+  const LAST_KEY_REQUEST = 'VISUALIZADOR_ULTIMA_TECLA';
+  const LAST_KEY_MAX_AGE_MS = 1500;
   const isTopFrame = window === window.top;
 
   let settings = {
@@ -97,7 +99,8 @@
       try {
         chrome.runtime.sendMessage({
           type: MESSAGE_TYPE,
-          label: buildComboLabel(event)
+          label: buildComboLabel(event),
+          repeat: event.repeat
         });
       } catch {
         // Contexto da extensão invalidado (recarregada): ignora silenciosamente.
@@ -209,13 +212,34 @@
 
   let hideTimer;
   let fadeTimer;
+  let currentLabel = null;
+  let repeatCount = 0;
+  let isVisible = false;
 
-  function showLabel(label) {
+  function resetCounter() {
+    isVisible = false;
+    currentLabel = null;
+    repeatCount = 0;
+  }
+
+  // Conta pressionamentos consecutivos da mesma tecla enquanto o visualizador
+  // está visível (ex.: Tab pressionado 3 vezes exibe "Tab ×3").
+  // Auto-repetição por tecla mantida pressionada não incrementa o contador.
+  function showLabel(label, isAutoRepeat = false) {
     if (!settings.enabled || !label) return;
 
     ensureAttached();
 
-    box.innerText = label;
+    if (isVisible && label === currentLabel) {
+      if (!isAutoRepeat) repeatCount += 1;
+    } else {
+      repeatCount = 1;
+    }
+
+    currentLabel = label;
+    isVisible = true;
+
+    box.innerText = repeatCount > 1 ? `${label} ×${repeatCount}` : label;
     box.style.display = 'block';
     box.style.opacity = '1';
 
@@ -227,19 +251,54 @@
       fadeTimer = setTimeout(() => {
         if (box.style.opacity === '0') {
           box.style.display = 'none';
+          resetCounter();
         }
       }, 150);
     }, 1200);
   }
 
+  // Registra a tecla fora da página, pois teclas como Enter em link podem
+  // navegar ou abrir nova aba antes do navegador pintar o visualizador.
+  function reportKey(label, isAutoRepeat) {
+    try {
+      chrome.runtime.sendMessage({
+        type: MESSAGE_TYPE,
+        label,
+        repeat: isAutoRepeat
+      });
+    } catch {
+      // Contexto da extensão invalidado (recarregada): ignora silenciosamente.
+    }
+  }
+
+  // Reexibe a tecla pressionada imediatamente antes desta página assumir o foco.
+  function restoreLastKey() {
+    try {
+      chrome.runtime.sendMessage({ type: LAST_KEY_REQUEST }, (lastKey) => {
+        void chrome.runtime.lastError;
+
+        if (!lastKey?.label) return;
+        if (Date.now() - lastKey.at > LAST_KEY_MAX_AGE_MS) return;
+
+        showLabel(lastKey.label);
+      });
+    } catch {
+      // Contexto da extensão invalidado (recarregada): ignora silenciosamente.
+    }
+  }
+
   window.addEventListener('keydown', (event) => {
-    showLabel(buildComboLabel(event));
+    const label = buildComboLabel(event);
+    showLabel(label, event.repeat);
+    reportKey(label, event.repeat);
   }, true);
 
   // Recebe teclas capturadas em iframes da mesma aba.
   chrome.runtime.onMessage.addListener((message) => {
     if (message?.type === MESSAGE_TYPE) {
-      showLabel(message.label);
+      showLabel(message.label, message.repeat);
     }
   });
+
+  restoreLastKey();
 })();
